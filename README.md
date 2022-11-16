@@ -1,3 +1,10 @@
+# Todos
+
+![preview](public/preview.png)
+
+## Simple single-paged application for managing tasks locally
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
