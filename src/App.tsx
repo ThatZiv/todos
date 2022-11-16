@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, createContext } from 'react';
 import './App.css';
-import List from './components/List';
+
+import List from './components/List'; // this is a component
+import { TodosContext, empty } from './contexts/Todos';
 
 function App() {
   const todoRef = useRef<HTMLInputElement | null>(null); // binding to main input 
-  const deleteRef = useRef<HTMLInputElement | null>(null); // binding to delete input
-
-  const result: string[] = [];
-  const [todos, setTodos] = useState(result)
+  const [todos, setTodos] = useState(empty)
 
   useEffect(() => { // lifecycle mgmt
     setTodos(getStorage())
@@ -21,26 +20,17 @@ function App() {
     setTodos(newTodos)
     setStorage(newTodos)
   };
+
   const removeTodo = (index: number): void => {
     todos.splice(index, 1) // remove the element "index" of i
     const newTodos = [...todos]
     setTodos(newTodos)
-    setStorage(newTodos) 
+    setStorage(newTodos)
   }
 
   const handleAddTodo = () => {
     if (todoRef.current) {
       addTodo(todoRef.current?.value)
-    }
-  }
-  const handleRemoveTodo = () => {
-    if (deleteRef.current) {
-      const index = parseInt(deleteRef.current.value) - 1
-      if (todos?.[index]) { // check if that delete value the user gives is in the range of the array
-        removeTodo(index) // -1 because indicies start at 0 and the user is given from the start of 1
-      } else {
-        alert("That message doesn't exist!")
-      }
     }
   }
 
@@ -53,20 +43,17 @@ function App() {
     return currentTodos ? JSON.parse(currentTodos) : []
   }
 
-
   return (
     <div className="App">
-      <header className="App-header">
-        <List todos={todos}>My TODO(s)</List>
-        <div>
-          <input className='paddedInputs' placeholder='add what TODO' type="text" ref={todoRef} />
-          <button className='paddedInputs' onClick={handleAddTodo}>Add</button>
-        </div>
-        <div>
-          <input className='paddedInputs' placeholder=' # TODO to delete ' type="number" ref={deleteRef} />
-          <button className='paddedInputs' onClick={handleRemoveTodo}>Remove</button>
-        </div>
-      </header>
+      <TodosContext.Provider value={{ todos, removeTodo }}> {/* Pass in the "todos" STATE in the provider and also the "removeTodo" DISPATCH so that child elements can access those*/}
+        <header className="App-header">
+          <List todos={todos}>My TODO(s)</List>
+          <div>
+            <input className='paddedInputs' placeholder='add what TODO' type="text" ref={todoRef} />
+            <button className='paddedInputs' onClick={handleAddTodo}>Add</button>
+          </div>
+        </header>
+      </TodosContext.Provider>
     </div>
   );
 }

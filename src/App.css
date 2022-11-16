@@ -50,3 +50,12 @@ li {
   display: inline-block;
   list-style-type: "⚠";
 }
+
+button {
+  background-color: #ffffff;
+  
+}
+
+button:hover {
+  background-color: #73fb61;
+}
